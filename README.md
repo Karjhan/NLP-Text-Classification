@@ -33,10 +33,8 @@ For more information, the documentation is attached to the rest of the files.
 
 ## Visuals (Postman)
 
-### Resolution Page
 ![SS_Postman_1](./screenshots/SS_Postman_1.png)
 
-### Davis Putnam Page
 ![SS_Postman_2](./screenshots/SS_Postman_2.png)
 
 ## Final Note
