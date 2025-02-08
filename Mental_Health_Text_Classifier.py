@@ -6,18 +6,22 @@ import numpy as np
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.optimizers.schedules import ExponentialDecay
 import os
 from joblib import load
 import re
 import string
 
 model_saves_directory = "model-saves"
-cnn_text_classification_model = load_model(os.path.join(model_saves_directory, 'cnn_text_classification_model.h5'))
+cnn_text_classification_model = load_model(
+    os.path.join(model_saves_directory, 'cnn_text_classification_model.h5'),
+    custom_objects={'ExponentialDecay': ExponentialDecay}
+)
 cnn_mental_health_types_classification_model = load(os.path.join(model_saves_directory, 'non_cnn_mental_health_types_classification.joblib'))
 
 tfidf = load(os.path.join(model_saves_directory, 'tfidf_vectorizer.joblib'))
 max_sequence_length = 25000
-tokenizer = Tokenizer()
+tokenizer = load("model-saves/tokenizer.joblib")
 
 stop_words = set(stopwords.words('english'))
 stemmer = PorterStemmer()
@@ -51,7 +55,7 @@ def classify_text():
 
     print(mental_health_pred)
 
-    if mental_health_pred[0][0] > 0.5:
+    if mental_health_pred[0][0] < 0.5:
         return jsonify({'message': 'The text is not related to mental health issues'}), 200
 
     input_text_tfidf = tfidf.transform([preprocessed_text])
